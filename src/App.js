@@ -1,53 +1,149 @@
 import React, { useEffect, useState } from 'react';
-import QuestionCard from './components/QuestionCard';
-import './App.css';
+  import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+  import { Container } from '@mui/material';
+  import NavBar from './components/NavBar';
+  import LandingPage from './components/LandingPage';
+  import About from './components/About';
+  import OurTechnology from './components/OurTechnology';
+  import Login from './components/Login';
+  import QuestionCard from './components/QuestionCard';
+  import { AuthProvider, AuthContext } from './components/AuthContext';
+  import './App.css';
 
-function App() {
-  const [questions, setQuestions] = useState([]);
-  const [questionData, setQuestionData] = useState({});
+  const Dashboard = () => {
+    const [questions, setQuestions] = useState([]);
 
-  useEffect(() => {
-    // Fetch all questions for company (e.g., Nike, company_id = 1)
-    fetch('http://localhost:5000/api/companies/1/questions')
-      .then(res => res.json())
-      .then(data => {
-        setQuestions(data);
-        // Fetch detailed data for each question
-        data.forEach(q => {
-          fetch(`http://localhost:5000/api/questions/${q.id}`)
-            .then(res => res.json())
-            .then(detail => {
-              setQuestionData(prev => ({
-                ...prev,
-                [q.id]: detail[`question_${q.id}`]
-              }));
-            });
-        });
-      });
-  }, []);
+    useEffect(() => {
+      fetch('http://localhost:5000/api/companies/1/questions')
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then(data => setQuestions(data))
+        .catch(error => console.error('Error fetching questions:', error));
+    }, []);
 
-  return (
-    <div className="App">
-      <h1>Review Insights Dashboard</h1>
-      {questions.length > 0 ? (
-        questions.map(q => (
-          questionData[q.id] && (
+    return (
+      <Container maxWidth="lg" sx={{ padding: '20px' }}>
+        {questions.length === 0 ? (
+          <p>No questions loaded. Check backend connection.</p>
+        ) : (
+          questions.map(question => (
             <QuestionCard
-              key={q.id}
-              title={q.title}
-              summary={questionData[q.id].summary}
-              rankedList={questionData[q.id].ranked_list}
-              sampleReviews={questionData[q.id].sample_reviews}
-              dataConfidence={questionData[q.id].data_confidence}
-              isComposite={q.title === 'Removal Candidates'}
+              key={question.id}
+              title={question.title}
+              summary={question.summary}
+              dataConfidence={question.data_confidence}
+              rankedList={[]}
+              sampleReviews={{}}
+              isComposite={['Removal Candidates', 'Feature Sentiment', 'Prioritization'].includes(question.title)}
             />
-          )
-        ))
-      ) : (
-        <p>Loading...</p>
-      )}
-    </div>
-  );
-}
+          ))
+        )}
+      </Container>
+    );
+  };
 
-export default App;
+  const ProtectedRoute = ({ children }) => {
+    const { isAuthenticated } = React.useContext(AuthContext);
+    return isAuthenticated ? children : <Navigate to="/login" />;
+  };
+
+  const App = () => {
+    return (
+      <AuthProvider>
+        <Router>
+          <NavBar />
+          <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/technology" element={<OurTechnology />} />
+            <Route path="/login" element={<Login />} />
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+          </Routes>
+        </Router>
+      </AuthProvider>
+    );
+  };
+
+  export default App;
+
+
+// import React, { useEffect, useState } from 'react';
+// import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+// import { Container } from '@mui/material';
+// import NavBar from './components/NavBar';
+// import LandingPage from './components/LandingPage';
+// import About from './components/About';
+// import OurTechnology from './components/OurTechnology';
+// import Login from './components/Login';
+// import QuestionCard from './components/QuestionCard';
+// import { AuthProvider } from './components/AuthContext'; // Import AuthProvider only
+// import './App.css';
+
+// const Dashboard = () => {
+//   const [questions, setQuestions] = useState([]);
+
+//   useEffect(() => {
+//     fetch('http://localhost:5000/api/companies/1/questions')
+//       .then(response => response.json())
+//       .then(data => setQuestions(data))
+//       .catch(error => console.error('Error fetching questions:', error));
+//   }, []);
+
+//   return (
+//     <Container maxWidth="lg" sx={{ padding: '20px' }}>
+//       {questions.map(question => (
+//         <QuestionCard
+//           key={question.id}
+//           title={question.title}
+//           summary={question.summary}
+//           dataConfidence={question.data_confidence}
+//           rankedList={[]}
+//           sampleReviews={{}}
+//           isComposite={['Removal Candidates', 'Feature Sentiment', 'Prioritization'].includes(question.title)}
+//         />
+//       ))}
+//     </Container>
+//   );
+// };
+
+// const ProtectedRoute = ({ children }) => {
+//   const { isAuthenticated } = React.useContext(React.useContext(require('./components/AuthContext').default)); // Use default export
+//   return isAuthenticated ? children : <Navigate to="/login" />;
+// };
+
+// const App = () => {
+//   return (
+//     <AuthProvider>
+//       <Router>
+//         <NavBar />
+//         <Routes>
+//           <Route path="/" element={<LandingPage />} />
+//           <Route path="/about" element={<About />} />
+//           <Route path="/technology" element={<OurTechnology />} />
+//           <Route path="/login" element={<Login />} />
+//           <Route
+//             path="/dashboard"
+//             element={
+//               <ProtectedRoute>
+//                 <Dashboard />
+//               </ProtectedRoute>
+//             }
+//           />
+//         </Routes>
+//       </Router>
+//     </AuthProvider>
+//   );
+// };
+
+// export default App;

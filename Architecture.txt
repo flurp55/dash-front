@@ -1,0 +1,23 @@
+├── public
+│   ├── assets
+│   │   └── images
+│   │       └── VoicePulseLogo.png
+│   ├── index.html
+│   ├── favicon.ico
+│   └── manifest.json
+├── src
+│   ├── components
+│   │   ├── About.js
+│   │   ├── AuthContext.js
+│   │   ├── FeatureChart.js
+│   │   ├── LandingPage.js
+│   │   ├── Login.js
+│   │   ├── NavBar.js
+│   │   ├── OurTechnology.js
+│   │   ├── QuestionCard.js
+│   │   ├── QuotesAccordion.js
+│   │   └── Summary.js
+│   ├── App.js
+│   ├── App.css
+│   └── index.js
+├── package.json
