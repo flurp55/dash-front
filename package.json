@@ -24,10 +24,9 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "node server.js",
+    "start": "npx serve -s build -l $PORT",
     "build": "react-scripts build",
-    "test": "echo \"Tests skipped in CI\"",
-    "eject": "react-scripts eject"
+    "test": "echo \"No tests in production\""
   },
   "eslintConfig": {
     "extends": [
