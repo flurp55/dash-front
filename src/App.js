@@ -9,12 +9,13 @@ import React, { useEffect, useState } from 'react';
   import QuestionCard from './components/QuestionCard';
   import { AuthProvider, AuthContext } from './components/AuthContext';
   import './App.css';
+  import { API_BASE_URL } from './config/api';
 
   const Dashboard = () => {
     const [questions, setQuestions] = useState([]);
 
     useEffect(() => {
-      fetch('http://localhost:5000/api/companies/1/questions')
+      fetch(`${API_BASE_URL}/api/companies/1/questions`)
         .then(response => {
           if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
