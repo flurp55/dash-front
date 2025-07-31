@@ -33,7 +33,7 @@ const QuestionCard = ({ title, summary, rankedList, sampleReviews, dataConfidenc
   return (
     <div style={{ border: '1px solid #ddd', padding: '20px', marginBottom: '20px', borderRadius: '8px' }}>
       <h2>{title}</h2>
-      <Summary text={summary} confidence={dataConfidence} />
+      {/* <Summary text={summary} confidence={dataConfidence} /> */}
       <FeatureChart 
         rankedList={filteredRankedList} 
         isComposite={isComposite || title === 'Feature Sentiment' || title === 'Prioritization'} 
