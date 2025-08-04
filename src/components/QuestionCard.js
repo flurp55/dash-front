@@ -33,7 +33,7 @@ const QuestionCard = ({ title, summary, rankedList, sampleReviews, dataConfidenc
     // 'General App Satisfaction': 'Satisfaction Distribution',
     // 'Competitor Features Missing': 'Missing Competitor Features',
     // 'Competitor Advantages': 'Competitor Advantage Counts'
-  }[title] || 'Feature Analysis';
+  }[title] || '';
 
   // Filter out vague categories
   const filteredRankedList = rankedList.filter(([feature]) => 
