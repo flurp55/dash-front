@@ -6,19 +6,33 @@ import QuotesAccordion from './QuotesAccordion';
 const QuestionCard = ({ title, summary, rankedList, sampleReviews, dataConfidence, isComposite }) => {
   // Define chart label based on question title
   const chartLabel = {
-    'Features Mentioned Most': 'Feature Mention Counts',
-    'Top Missing Features': 'Missing Feature Requests',
-    'Features Requested Most': 'Feature Request Counts',
-    'Removal Candidates': 'Feature Removal Scores',
-    'Prevalent Issues': 'Bug/Issue Reports',
-    'Prioritization': 'Priority Scores',
-    'Important Features to Fix': 'Feature Fix Requests',
-    'Feature Sentiment': 'Feature Sentiment Scores',
-    'Least Liked Features': 'Negative Sentiment Counts',
-    'Competitor Comparisons': 'Competitor Comparison Counts',
-    'General App Satisfaction': 'Satisfaction Distribution',
-    'Competitor Features Missing': 'Missing Competitor Features',
-    'Competitor Advantages': 'Competitor Advantage Counts'
+    'Features Mentioned Most': '',
+    'Top Missing Features': '',
+    'Features Requested Most': '',
+    'Removal Candidates': '',
+    'Prevalent Issues': '',
+    'Prioritization': '',
+    'Important Features to Fix': '',
+    'Feature Sentiment': '',
+    'Least Liked Features': '',
+    'Competitor Comparisons': '',
+    'General App Satisfaction': '',
+    'Competitor Features Missing': '',
+    'Competitor Advantages': ''
+
+    // 'Features Mentioned Most': 'Feature Mention Counts',
+    // 'Top Missing Features': 'Missing Feature Requests',
+    // 'Features Requested Most': 'Feature Request Counts',
+    // 'Removal Candidates': 'Feature Removal Scores',
+    // 'Prevalent Issues': 'Bug/Issue Reports',
+    // 'Prioritization': 'Priority Scores',
+    // 'Important Features to Fix': 'Feature Fix Requests',
+    // 'Feature Sentiment': 'Feature Sentiment Scores',
+    // 'Least Liked Features': 'Negative Sentiment Counts',
+    // 'Competitor Comparisons': 'Competitor Comparison Counts',
+    // 'General App Satisfaction': 'Satisfaction Distribution',
+    // 'Competitor Features Missing': 'Missing Competitor Features',
+    // 'Competitor Advantages': 'Competitor Advantage Counts'
   }[title] || 'Feature Analysis';
 
   // Filter out vague categories
