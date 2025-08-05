@@ -11,39 +11,65 @@ import React, { useEffect, useState } from 'react';
   import './App.css';
   import { API_BASE_URL } from './config/api';
 
-  const Dashboard = () => {
-  const [questions, setQuestions] = useState([]);
+const Dashboard = () => {
+  const [questionsData, setQuestionsData] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    // This fetch remains the same
-    fetch(`${API_BASE_URL}/api/companies/1/questions`)
+    // Single API call to get all questions with their detailed data
+    fetch(`${API_BASE_URL}/api/companies/1/questions-detailed`) // New endpoint
       .then(response => {
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
         return response.json();
       })
-      .then(data => setQuestions(data))
-      .catch(error => console.error('Error fetching questions:', error));
+      .then(data => {
+        console.log('Received all questions data:', data);
+        setQuestionsData(data);
+        setIsLoading(false);
+      })
+      .catch(error => {
+        console.error('Error fetching questions:', error);
+        setError(error.message);
+        setIsLoading(false);
+      });
   }, []);
+
+  if (isLoading) {
+    return (
+      <Container maxWidth="lg" sx={{ padding: '20px' }}>
+        <p>Loading questions...</p>
+      </Container>
+    );
+  }
+
+  if (error) {
+    return (
+      <Container maxWidth="lg" sx={{ padding: '20px' }}>
+        <p>Error: {error}</p>
+      </Container>
+    );
+  }
+
+  const questions = Object.values(questionsData);
 
   return (
     <Container maxWidth="lg" sx={{ padding: '20px' }}>
-      {questions.length === 0 ? (
-        <p>Loading questions...</p>
-      ) : (
-        // The props being passed to QuestionCard are now simpler
-        questions.map(question => (
-          <QuestionCard
-            key={question.id}
-            id={question.id} // Pass the ID so the card can fetch its data
-            title={question.title}
-            summary={question.summary}
-            dataConfidence={question.data_confidence}
-            isComposite={['Removal Candidates', 'Feature Sentiment', 'Prioritization'].includes(question.title)}
-          />
-        ))
-      )}
+      {questions.map(question => (
+        <QuestionCard
+          key={question.id}
+          id={question.id}
+          title={question.title}
+          summary={question.summary}
+          dataConfidence={question.data_confidence}
+          isComposite={['Removal Candidates', 'Feature Sentiment', 'Prioritization'].includes(question.title)}
+          // Pass the detailed data directly as props
+          rankedList={question.ranked_list || []}
+          sampleReviews={question.sample_reviews || {}}
+        />
+      ))}
     </Container>
   );
 };
