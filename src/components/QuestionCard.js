@@ -22,6 +22,8 @@ const QuestionCard = ({ id, title, summary, dataConfidence, isComposite }) => {
     
     const fetchData = async () => {
       console.log(`QuestionCard ${id}: Starting fetch (mounted: ${mountedRef.current})`);
+      console.log(`QuestionCard ${id}: Cache status:`, requestCache.has(id) ? 'HIT' : 'MISS');
+      console.log(`QuestionCard ${id}: Pending requests:`, Array.from(pendingRequests.keys()));
       
       // Check cache first
       if (requestCache.has(id)) {
@@ -55,8 +57,10 @@ const QuestionCard = ({ id, title, summary, dataConfidence, isComposite }) => {
       }
 
       // Create new request
+      console.log(`QuestionCard ${id}: Making new API request`);
       const requestPromise = fetch(`${API_BASE_URL}/api/questions/${id}`)
         .then(response => {
+          console.log(`QuestionCard ${id}: Received response, status: ${response.status}`);
           if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
           }
@@ -72,12 +76,14 @@ const QuestionCard = ({ id, title, summary, dataConfidence, isComposite }) => {
           
           // Cache the data
           requestCache.set(id, questionData);
+          console.log(`QuestionCard ${id}: Data cached. Cache now has:`, Array.from(requestCache.keys()));
           
           return questionData;
         })
         .finally(() => {
           // Clean up pending request
           pendingRequests.delete(id);
+          console.log(`QuestionCard ${id}: Removed from pending requests`);
         });
 
       // Store the pending request
