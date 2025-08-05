@@ -3,8 +3,8 @@ import React, { useEffect, useState } from 'react';
   import { Container } from '@mui/material';
   import NavBar from './components/NavBar';
   import LandingPage from './components/LandingPage';
-  import About from './components/About';
-  import OurTechnology from './components/OurTechnology';
+  // import About from './components/About';
+  // import OurTechnology from './components/OurTechnology';
   import Login from './components/Login';
   import QuestionCard from './components/QuestionCard';
   import { AuthProvider, AuthContext } from './components/AuthContext';
@@ -12,40 +12,41 @@ import React, { useEffect, useState } from 'react';
   import { API_BASE_URL } from './config/api';
 
   const Dashboard = () => {
-    const [questions, setQuestions] = useState([]);
+  const [questions, setQuestions] = useState([]);
 
-    useEffect(() => {
-      fetch(`${API_BASE_URL}/api/companies/1/questions`)
-        .then(response => {
-          if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-          }
-          return response.json();
-        })
-        .then(data => setQuestions(data))
-        .catch(error => console.error('Error fetching questions:', error));
-    }, []);
+  useEffect(() => {
+    // This fetch remains the same
+    fetch(`${API_BASE_URL}/api/companies/1/questions`)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(data => setQuestions(data))
+      .catch(error => console.error('Error fetching questions:', error));
+  }, []);
 
-    return (
-      <Container maxWidth="lg" sx={{ padding: '20px' }}>
-        {questions.length === 0 ? (
-          <p>No questions loaded. Check backend connection.</p>
-        ) : (
-          questions.map(question => (
-            <QuestionCard
-              key={question.id}
-              title={question.title}
-              summary={question.summary}
-              dataConfidence={question.data_confidence}
-              rankedList={[]}
-              sampleReviews={{}}
-              isComposite={['Removal Candidates', 'Feature Sentiment', 'Prioritization'].includes(question.title)}
-            />
-          ))
-        )}
-      </Container>
-    );
-  };
+  return (
+    <Container maxWidth="lg" sx={{ padding: '20px' }}>
+      {questions.length === 0 ? (
+        <p>Loading questions...</p>
+      ) : (
+        // The props being passed to QuestionCard are now simpler
+        questions.map(question => (
+          <QuestionCard
+            key={question.id}
+            id={question.id} // Pass the ID so the card can fetch its data
+            title={question.title}
+            summary={question.summary}
+            dataConfidence={question.data_confidence}
+            isComposite={['Removal Candidates', 'Feature Sentiment', 'Prioritization'].includes(question.title)}
+          />
+        ))
+      )}
+    </Container>
+  );
+};
 
   const ProtectedRoute = ({ children }) => {
     const { isAuthenticated } = React.useContext(AuthContext);
@@ -59,8 +60,8 @@ import React, { useEffect, useState } from 'react';
           <NavBar />
           <Routes>
             <Route path="/" element={<LandingPage />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/technology" element={<OurTechnology />} />
+            {/* <Route path="/about" element={<About />} />
+            <Route path="/technology" element={<OurTechnology />} /> */}
             <Route path="/login" element={<Login />} />
             <Route
               path="/dashboard"

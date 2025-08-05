@@ -17,8 +17,8 @@ const NavBar = () => {
           VoicePulse
         </Typography>
         <Button color="inherit" component={Link} to="/">Home</Button>
-        <Button color="inherit" component={Link} to="/about">About</Button>
-        <Button color="inherit" component={Link} to="/technology">Our Technology</Button>
+        {/* <Button color="inherit" component={Link} to="/about">About</Button>
+        <Button color="inherit" component={Link} to="/technology">Our Technology</Button> */}
         {isAuthenticated ? (
           <>
             <Button color="inherit" component={Link} to="/dashboard">Dashboard</Button>

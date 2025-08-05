@@ -1,44 +1,52 @@
-import React from 'react';
-// import Summary from './Summary';
+// src/components/QuestionCard.js
+
+import React, { useState, useEffect } from 'react';
 import FeatureChart from './FeatureChart';
 import QuotesAccordion from './QuotesAccordion';
+import { API_BASE_URL } from '../config/api'; // Make sure path is correct
 
-const QuestionCard = ({ title, summary, rankedList, sampleReviews, dataConfidence, isComposite }) => {
-  // Define chart label based on question title
-  const chartLabel = {
-    'Features Mentioned Most': '',
-    'Top Missing Features': '',
-    'Features Requested Most': '',
-    'Removal Candidates': '',
-    'Prevalent Issues': '',
-    'Prioritization': '',
-    'Important Features to Fix': '',
-    'Feature Sentiment': '',
-    'Least Liked Features': '',
-    'Competitor Comparisons': '',
-    'General App Satisfaction': '',
-    'Competitor Features Missing': '',
-    'Competitor Advantages': ''
+// The component now takes the basic question info as props
+const QuestionCard = ({ id, title, summary, dataConfidence, isComposite }) => {
+  const [rankedList, setRankedList] = useState([]);
+  const [sampleReviews, setSampleReviews] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-    // 'Features Mentioned Most': 'Feature Mention Counts',
-    // 'Top Missing Features': 'Missing Feature Requests',
-    // 'Features Requested Most': 'Feature Request Counts',
-    // 'Removal Candidates': 'Feature Removal Scores',
-    // 'Prevalent Issues': 'Bug/Issue Reports',
-    // 'Prioritization': 'Priority Scores',
-    // 'Important Features to Fix': 'Feature Fix Requests',
-    // 'Feature Sentiment': 'Feature Sentiment Scores',
-    // 'Least Liked Features': 'Negative Sentiment Counts',
-    // 'Competitor Comparisons': 'Competitor Comparison Counts',
-    // 'General App Satisfaction': 'Satisfaction Distribution',
-    // 'Competitor Features Missing': 'Missing Competitor Features',
-    // 'Competitor Advantages': 'Competitor Advantage Counts'
-  }[title] || '';
+  useEffect(() => {
+    // This effect runs once for each QuestionCard when it mounts
+    console.log(`QuestionCard ${id}: Fetching detailed data...`);
 
-  // Filter out vague categories
-  const filteredRankedList = rankedList.filter(([feature]) => 
+    fetch(`${API_BASE_URL}/api/questions/${id}`)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(data => {
+        // Your backend wraps the response in a key like "question_1"
+        const questionData = data[`question_${id}`];
+        if (!questionData) {
+          throw new Error("Data format from API is incorrect.");
+        }
+
+        console.log(`QuestionCard ${id}: Received data`, questionData);
+        setRankedList(questionData.ranked_list || []);
+        setSampleReviews(questionData.sample_reviews || {});
+        setIsLoading(false);
+      })
+      .catch(err => {
+        console.error(`Error fetching details for question ${id}:`, err);
+        setError(err.message);
+        setIsLoading(false);
+      });
+  }, [id]); // Dependency array: re-run if the id prop ever changes
+
+  // Filter out vague categories (this logic is the same as before)
+  const filteredRankedList = rankedList.filter(([feature]) =>
     !['general_feature_request', 'general_issue', 'General User Feedback'].includes(feature)
   );
+
   const filteredSampleReviews = { ...sampleReviews };
   ['general_feature_request', 'general_issue', 'General User Feedback'].forEach(key => {
     delete filteredSampleReviews[key];
@@ -47,14 +55,21 @@ const QuestionCard = ({ title, summary, rankedList, sampleReviews, dataConfidenc
   return (
     <div style={{ border: '1px solid #ddd', padding: '20px', marginBottom: '20px', borderRadius: '8px' }}>
       <h2>{title}</h2>
-      {/* <Summary text={summary} confidence={dataConfidence} /> */}
-      <FeatureChart 
-        rankedList={filteredRankedList} 
-        isComposite={isComposite || title === 'Feature Sentiment' || title === 'Prioritization'} 
-        chartLabel={chartLabel} 
-        isSatisfaction={title === 'General App Satisfaction'}
-      />
-      <QuotesAccordion sampleReviews={filteredSampleReviews} />
+      {/* You can show a summary, confidence, etc. here */}
+
+      {isLoading && <p>Loading chart data...</p>}
+      {error && <p>Error: {error}</p>}
+      {!isLoading && !error && (
+        <>
+          <FeatureChart
+            rankedList={filteredRankedList}
+            isComposite={isComposite || title === 'Feature Sentiment' || title === 'Prioritization'}
+            chartLabel={''} // Your label logic here
+            isSatisfaction={title === 'General App Satisfaction'}
+          />
+          <QuotesAccordion sampleReviews={filteredSampleReviews} />
+        </>
+      )}
     </div>
   );
 };
