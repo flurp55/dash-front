@@ -135,30 +135,25 @@ const QuestionCard = ({ id, title, summary, dataConfidence, isComposite }) => {
     !['general_feature_request', 'general_issue', 'General User Feedback'].includes(feature)
   );
 
-  // Deduplicate the ranked list - combine duplicate features by summing their counts
+  // Deduplicate the ranked list - keep only the first occurrence of each feature
   const deduplicatedRankedList = [];
-  const featureMap = new Map();
+  const seenFeatures = new Set();
   
   filteredRankedList.forEach(([feature, count]) => {
-    if (featureMap.has(feature)) {
-      // If feature already exists, add to the count
-      featureMap.set(feature, featureMap.get(feature) + count);
-    } else {
-      // New feature
-      featureMap.set(feature, count);
+    if (!seenFeatures.has(feature)) {
+      // First time seeing this feature, keep it
+      seenFeatures.add(feature);
+      deduplicatedRankedList.push([feature, count]);
     }
+    // If we've seen this feature before, skip it (don't add duplicate)
   });
-  
-  // Convert back to array format and sort by count (descending)
-  for (const [feature, count] of featureMap.entries()) {
-    deduplicatedRankedList.push([feature, count]);
-  }
-  deduplicatedRankedList.sort((a, b) => b[1] - a[1]);
 
   console.log(`QuestionCard ${id}: Before deduplication:`, filteredRankedList.length, 'items');
   console.log(`QuestionCard ${id}: After deduplication:`, deduplicatedRankedList.length, 'items');
   if (filteredRankedList.length !== deduplicatedRankedList.length) {
     console.log(`QuestionCard ${id}: 🚨 FOUND DUPLICATES! Removed ${filteredRankedList.length - deduplicatedRankedList.length} duplicate entries`);
+    console.log(`QuestionCard ${id}: Original features:`, filteredRankedList.map(([f]) => f));
+    console.log(`QuestionCard ${id}: Deduplicated features:`, deduplicatedRankedList.map(([f]) => f));
   }
 
   const filteredSampleReviews = { ...sampleReviews };
