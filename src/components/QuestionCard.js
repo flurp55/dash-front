@@ -9,13 +9,6 @@ import { API_BASE_URL } from '../config/api';
 const requestCache = new Map();
 const pendingRequests = new Map();
 
-// Export a function that clears the module-level caches
-export const clearQuestionCardCache = () => {
-  requestCache.clear();
-  pendingRequests.clear();
-  console.log("QuestionCard cache cleared.");
-};
-
 const QuestionCard = ({ id, title, summary, dataConfidence, isComposite }) => {
   const [rankedList, setRankedList] = useState([]);
   const [sampleReviews, setSampleReviews] = useState({});

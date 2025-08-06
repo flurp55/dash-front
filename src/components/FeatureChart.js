@@ -5,7 +5,7 @@ import { Typography } from '@mui/material';
 
 ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
-const FeatureChart = ({ rankedList, isComposite, chartLabel, isSatisfaction }) => {
+const FeatureChart = ({ id, rankedList, isComposite, chartLabel, isSatisfaction }) => {
   const data = {
     labels: rankedList.map(([feature]) => feature.replace('_', ' ').toUpperCase()),
     datasets: [
@@ -49,7 +49,7 @@ const FeatureChart = ({ rankedList, isComposite, chartLabel, isSatisfaction }) =
       <Typography variant="h6" gutterBottom align="center">
         {chartLabel}
       </Typography>
-      <Bar data={data} options={options} />
+      <Bar key={id} data={data} options={options} />
     </div>
   );
 };
