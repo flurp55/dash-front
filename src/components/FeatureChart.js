@@ -22,7 +22,9 @@ const FeatureChart = ({ rankedList, isComposite, chartLabel, isSatisfaction }) =
   const options = {
     responsive: true,
     plugins: {
-      legend: { position: 'top' },
+      legend: { 
+        display: false  // This hides the legend completely
+      },
       tooltip: {
         callbacks: {
           label: (context) => isSatisfaction 
