@@ -161,13 +161,9 @@ const QuestionCard = ({ id, title, summary, dataConfidence, isComposite }) => {
     delete filteredSampleReviews[key];
   });
 
-  // TEMPORARY TEST - hardcode data for question 1
-  // const testRankedList = id === 1 ? [["test_feature", 5]] : filteredRankedList;
-  // const testSampleReviews = id === 1 ? {"test_feature": ["test review"]} : filteredSampleReviews;
-
   return (
     <div style={{ border: '1px solid #ddd', padding: '20px', marginBottom: '20px', borderRadius: '8px' }}>
-      <h2>{title} (ID: {id})</h2>
+      <h2>{title}</h2>
       
       {isLoading && <p>Loading chart data...</p>}
       {error && <p>Error: {error}</p>}
