@@ -174,12 +174,12 @@ const QuestionCard = ({ id, title, summary, dataConfidence, isComposite }) => {
       {!isLoading && !error && (
         <>
           <FeatureChart
-            rankedList={testRankedList}
+            rankedList={deduplicatedRankedList}
             isComposite={isComposite || title === 'Feature Sentiment' || title === 'Prioritization'}
             chartLabel={''}
             isSatisfaction={title === 'General App Satisfaction'}
           />
-          <QuotesAccordion sampleReviews={testSampleReviews} />
+          <QuotesAccordion sampleReviews={filteredSampleReviews} />
         </>
       )}
     </div>
